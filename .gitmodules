@@ -1,0 +1,6 @@
+[submodule "chandler"]
+	path = chandler
+	url = https://github.com/whiteScripter/Chandler.git
+[submodule "photography"]
+	path = photography
+	url = https://github.com/whiteScripter/Photography.git
