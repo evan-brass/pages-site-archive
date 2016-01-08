@@ -1,0 +1,48 @@
+@import url(https://fonts.googleapis.com/css?family=Open+Sans|Montserrat);
+html{
+	background-color: #f2f2f2;
+	color: #1E1E24;
+}
+body{
+	max-width: 900px;
+	padding: 0 50px;
+	margin: 0 auto;
+	font-family: "Open Sans", sans-serif;
+}
+h1, h2, h3, h4, h5, h6{
+	font-family: "Montserrat";
+}
+.project{
+	border: 1px solid #ddd;
+	display: inline-block;
+	position: relative;
+	width: 400px;
+	height: 275px;
+	margin: 0 40px 40px 0;
+	overflow: hidden;
+	padding: 20px;
+	background-color: #fff;
+}
+.project h2{
+	margin: 0;
+}
+.project img{
+	transition: all .2s;
+	max-width: 100%;
+}
+.project .description{
+	transition: all .2s;
+	position: absolute;
+	bottom: 0;
+	opacity: 0;
+}
+.project:hover .description{
+	opacity: 1;
+}
+.project:hover img{
+	opacity: .5;
+}
+a{
+	text-decoration: none;
+	color: inherit;
+}
