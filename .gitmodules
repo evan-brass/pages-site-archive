@@ -4,3 +4,6 @@
 [submodule "photographyTemplate"]
 	path = photographyTemplate
 	url = D:\\web-root\\ConceptsProject\\html5\\HTML5Template
+[submodule "photography"]
+	path = photography
+	url = D:\\web-root\\ConceptsProject\\html5\\HTML5Template
