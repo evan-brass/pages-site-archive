@@ -1,5 +1,7 @@
 const
 maxTries = 30; // 10 for dev, 30 for release
+const
+reallySmall = 0.00000001;
 
 var canvas = document.getElementById('canvas');
 canvas.style.width = "100%";
@@ -21,22 +23,124 @@ var unitWidth = aspectRatio * unitHeight;
 var image = context.getImageData(0, 0, width, height);
 var data = image.data;
 
-// Gradiented mandelbrot
-function mandelbrotFailIter(c, previousAnswers, tries) {
+// Mandelbrot with period
+function createMandelbrotWithPeriod(py) {
+	py = py || 0;
+	// iterate through each pixel in the row
+	for (var px = 0; px < image.width; ++px) {
+		var color = periodColorAt(px, py);
+		data[(py * image.width * 4) + (px * 4)] = color.r; // Red
+		data[(py * image.width * 4) + (px * 4) + 1] = color.g; // Green
+		data[(py * image.width * 4) + (px * 4) + 2] = color.b; // Blue
+		data[(py * image.width * 4) + (px * 4) + 3] = 255; // Alpha
+	}
+	context.putImageData(image, 0, 0);
+
+	if (py < image.height) {
+		setTimeout(createMandelbrotWithPeriod.bind(this, ++py), 1);
+	}
+}
+var periods = [];
+function periodColorAt(x, y) {
+	var a, b;
+	a = (x / width) * unitWidth - unitWidth / 2;
+	b = (y / height) * unitHeight - unitHeight / 2;
+
+	var period = mandelPeriod(math.complex(a, b));
+	periods.push(period);
+	var intensity;
+	if (period >= 0) { // Regular period
+		intensity = Math.floor(period / maxTries * 255);
+		return {
+			r : intensity,
+			g : intensity,
+			b : intensity
+		}
+	} else if (period == -1) { // Spiral
+		return {
+			r : 0,
+			g : 0,
+			b : 255
+		}
+	} else if (period == -2) {
+		return {
+			r : 255,
+			g : 0,
+			b : 0,
+		}
+	} else { // Not in the set
+		return {
+			r : 0,
+			g : 0,
+			b : 0
+		}
+	}
+}
+
+function mandelPeriod(c, previousAnswers, tries) {
 	previousAnswers = previousAnswers || [];
 	tries = tries || 0;
-	if (math.abs(c) > 2) {
-		return tries;
+	if ((c.re * c.re + c.im * c.im) > 4) {
+		return -3;
 	}
 
-	if (previousAnswers.some(function(item) {
-		return _.isEqual(c, item);
-	})) {
-		return -1;
+	if (previousAnswers.slice(0, previousAnswers.length - 1).some(
+			function(item) {
+				return isClose(c, item);
+			})) {
+		// period is the distance between current c and a previous c
+		var period = previousAnswers.length
+				- previousAnswers.reverse().findIndex(function(item) {
+					return isClose(c, item);
+				});
+		return tries;
 	}
 
 	if (previousAnswers.length > 0
 			&& isClose(c, previousAnswers[previousAnswers.length - 1])) {
+		return -1;
+	}
+
+	++tries;
+	if (tries > maxTries) {
+		return -2;
+	}
+
+	previousAnswers.push(c);
+	return mandelPeriod(math.add(math.square(c), previousAnswers[0]),
+			previousAnswers, tries);
+}
+
+// Gradiented mandelbrot
+function createGradientMandelbrot(py) {
+	py = py || 0;
+	// iterate through each pixel in the row
+	for (var px = 0; px < image.width; ++px) {
+		var color = gradientColorAt(px, py);
+		data[(py * image.width * 4) + (px * 4)] = color.r; // Red
+		data[(py * image.width * 4) + (px * 4) + 1] = color.g; // Green
+		data[(py * image.width * 4) + (px * 4) + 2] = color.b; // Blue
+		data[(py * image.width * 4) + (px * 4) + 3] = 255; // Alpha
+	}
+	context.putImageData(image, 0, 0);
+
+	if (py < image.height) {
+		setTimeout(createGradientMandelbrot.bind(this, ++py), 1);
+	}
+}
+
+function mandelbrotFailIter(c, previousAnswers, tries) {
+	previousAnswers = previousAnswers || [];
+	tries = tries || 0;
+
+	if ((c.re * c.re + c.im * c.im) > 4) {
+		return tries;
+	}
+
+	if (previousAnswers.slice(0, previousAnswers.length - 1).some(
+			function(item) {
+				return isClose(c, item);
+			})) {
 		return -1;
 	}
 
@@ -57,36 +161,17 @@ function gradientColorAt(x, y) {
 
 	var failIteration = mandelbrotFailIter(math.complex(a, b));
 	var intensity;
-	if(failIteration != -1){
-		intensity = Math.floor(failIteration/maxTries * 255);
+	if (failIteration != -1) {
+		intensity = Math.floor(failIteration / maxTries * 255);
 	} else {
 		intensity = 0;
 	}
 	return {
-		r: intensity,
-		g: intensity,
-		b: intensity
+		r : intensity,
+		g : intensity,
+		b : intensity
 	};
 }
-
-function createGradientMandelbrot(py) {
-	py = py || 0;
-	// iterate through each pixel in the row
-	for (var px = 0; px < image.width; ++px) {
-		var color = gradientColorAt(px, py);
-		data[(py * image.width * 4) + (px * 4)] = color.r; // Red
-		data[(py * image.width * 4) + (px * 4) + 1] = color.g; // Green
-		data[(py * image.width * 4) + (px * 4) + 2] = color.b; // Blue
-		data[(py * image.width * 4) + (px * 4) + 3] = 255; // Alpha
-	}
-	context.putImageData(image, 0, 0);
-
-	if (py < image.height) {
-		setTimeout(createGradientMandelbrot.bind(this, ++py), 1);
-	}
-
-}
-
 
 // Plain Black and white
 function isMandelbrot(c) {
@@ -139,11 +224,7 @@ function setBackground() {
 	}
 }
 
-
 function isClose(c1, c2) {
-	const
-	reallySmall = 0.0000001;
-
 	var diffReal = c1.re - c2.re;
 	var diffImg = c1.im - c2.im;
 	if (math.abs(diffReal) < reallySmall && math.abs(diffImg) < reallySmall) {
