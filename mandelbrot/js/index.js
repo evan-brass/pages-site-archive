@@ -3,25 +3,7 @@ maxTries = 30; // 10 for dev, 30 for release
 const
 reallySmall = 0.00000001;
 
-var canvas = document.getElementById('canvas');
-canvas.style.width = "100%";
-canvas.style.height = "100%";
-
-var context = canvas.getContext('2d');
-
-var width, height;
-width = canvas.getBoundingClientRect().width;
-height = canvas.getBoundingClientRect().height;
-canvas.style.width = "";
-canvas.style.height = "";
-canvas.width = width;
-canvas.height = height;
-
-var aspectRatio = width / height;
-var unitHeight = 4;
-var unitWidth = aspectRatio * unitHeight;
-var image = context.getImageData(0, 0, width, height);
-var data = image.data;
+var canvas, context, width, height, aspectRatio, unitHeight, unitWidth, image, data;
 
 // Mandelbrot with period
 function createMandelbrotWithPeriod(py) {
@@ -234,5 +216,28 @@ function isClose(c1, c2) {
 	}
 }
 
+function setupCanvas(targetWidth, targetHeight){
+	canvas = document.getElementById('canvas');
+	canvas.style.width = targetWidth;
+	canvas.style.height = targetHeight;
+
+	context = canvas.getContext('2d');
+
+	width, height;
+	width = canvas.getBoundingClientRect().width;
+	height = canvas.getBoundingClientRect().height;
+	canvas.style.width = "";
+	canvas.style.height = "";
+	canvas.width = width;
+	canvas.height = height;
+
+	aspectRatio = width / height;
+	unitHeight = 4;
+	unitWidth = aspectRatio * unitHeight;
+	image = context.getImageData(0, 0, width, height);
+	data = image.data;
+}
+
+setupCanvas("100%", "100%");
 setBackground();
-createGradientMandelbrot();
+createMandelbrotWithPeriod();
