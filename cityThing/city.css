@@ -1,0 +1,100 @@
+body{
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    transition: all 5s;
+}
+/* Buildings: */
+#cityContainer{
+    border-bottom: #000 5px solid;
+    position: fixed;
+    width: 100%;
+    bottom: 50%;
+    left: 0;
+    text-align: center;
+}
+.sky-scrapper{
+    vertical-align: bottom;
+    background-color: #000;
+    display: inline-block;
+    width: 4em;
+    padding: 3px;
+    margin-left: 5px;
+}
+.window{
+    font-size: 10px;
+    transition: all .5s;
+    display: inline-block;
+    height: 1em;
+    width: .6em;
+    margin: 1px;
+}
+.window.on{
+    background-color: #ffff00;
+}
+.window.off{
+    background-color: transparent;
+}
+/* I decided not to implement the clouds.
+/* Other Ambient Effects:
+.cloud{
+    font-size: 30px;
+    position: fixed;
+    z-index: 100;
+    background-color: #fff;
+    opacity: .3;
+    width: 3em;
+    height: 1em;
+    border-radius: .5em;
+    animation: float-across 4s infinite alternate linear;
+}
+.cloud::before{
+    content: "";
+    position: absolute;
+    display: block;
+    background-color: #fff;
+    width: 1em;
+    height: 1em;
+    border-radius: .5em;
+    left: .3em;
+    top: -.6em;
+}
+.cloud::after{
+    content: "";
+    position: absolute;
+    display: block;
+    background-color: #fff;
+    width: 2em;
+    height: 2em;
+    border-radius: 1em;
+    left: .8em;
+    top: -1em;
+}
+@keyframes float-across{
+    from {
+        left: -5%;
+    }
+    to {
+        left: 105%;
+    }
+}
+*/
+
+/* Times: */
+.night{
+    background-color: #01031C !important;
+}
+.morning-1, .evening-3{
+    background-color: #0E1342 !important;
+}
+.morning-2, .evening-2{
+    background-color: #C73A1D !important;
+}
+.morning-3, .evening-1{
+    background-color: #FCE425 !important;
+}
+.day{
+    background-color: #48CBD4 !important;
+}
