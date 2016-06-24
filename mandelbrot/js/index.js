@@ -240,4 +240,4 @@ function setupCanvas(targetWidth, targetHeight){
 
 setupCanvas("100%", "100%");
 setBackground();
-createMandelbrotWithPeriod();
+createGradientMandelbrot();
