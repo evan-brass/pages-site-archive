@@ -21,7 +21,7 @@
 
       const container = document.createElement('div')
       for (let row = 0; row < numRows; ++row) {
-        for (let column = 0; column < numColumns; ++columns) {
+        for (let column = 0; column < numColumns; ++column) {
           let dot = document.createElement('div')
           dot.className = "dot"
           container.appendChild(dot)
