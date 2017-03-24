@@ -15,7 +15,7 @@
       console.log(imgData)
 
       // Make the dots
-      const pixelPerDot = 40
+      const pixelsPerDot = 40
       const numRows = screen.height / pixelsPerDot
       const numColumns = screen.width / pixelsPerDot
 
