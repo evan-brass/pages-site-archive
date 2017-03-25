@@ -1,4 +1,19 @@
 .dot{
   border-radius: 50%;
-  background-color: #eee;
+  background-color: #000;
+  width: 10px;
+  height: 10px;
+  position: fixed;
+  transform: translate(-50%, -50%)
+}
+html{
+  /*position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;*/
+  /*background-repeat: no-repeat;
+  background-image: url('../imgs/9.jpg');
+  background-size: contain;*/
+  background-color: #333;
 }
