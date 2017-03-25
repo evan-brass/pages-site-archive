@@ -6,7 +6,7 @@
       if (DEBUG) console.log(`Loaded the image`)
       resolve(img)
     })
-    img.src = "../imgs/9.jpg"
+    img.src = "../imgs/2.jpg"
   })).then((img) => {
       // Get the image's data
     	const canvas = document.createElement('canvas')
@@ -34,7 +34,7 @@
         // Align by height
         picPixelsPerDot = (pixelsPerDot / window.innerHeight) * imgData.height
         origin = {
-          x: Math.floor((window.innerWidth * (imgData.height / window.innerHeight) - imgData.width) / 2),
+          x: -Math.floor((window.innerWidth * (imgData.height / window.innerHeight) - imgData.width) / 2),
           y: 0
         }
       } else {
@@ -42,7 +42,7 @@
         picPixelsPerDot = (pixelsPerDot / window.innerWidth) * imgData.width
         origin = {
           x: 0,
-          y: Math.floor((window.innerHeight * (imgData.width / window.innerWidth) - imgData.height) / 2)
+          y: -Math.floor((window.innerHeight * (imgData.width / window.innerWidth) - imgData.height) / 2)
         }
       }
       if(DEBUG) console.log("Origin: ", origin)
@@ -79,7 +79,9 @@
             r = imgData.data[loc]
             g = imgData.data[loc + 1]
             b = imgData.data[loc + 2]
-            if(DEBUG) console.log(loc, imgData.data[loc], imgData.data[loc+1], imgData.data[loc+2])
+            if(DEBUG) {
+              // console.log(loc, imgData.data[loc], imgData.data[loc+1], imgData.data[loc+2])
+            }
           }
 
           // Move to the next dot
