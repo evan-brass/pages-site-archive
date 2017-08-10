@@ -17,6 +17,8 @@ body {
 #Menu {
   background-color: #fff;
   text-align: center;
+  overflow-y: auto;
+  padding-bottom: 20px;
 }
 canvas {
   position: absolute;
@@ -44,4 +46,7 @@ h2 {
     position: static;
     transform: none;
   }
+}
+ol {
+  margin: 0;
 }

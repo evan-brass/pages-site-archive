@@ -40,6 +40,16 @@ class Dotty {
     this.menu.root.id = "Menu"
     this.menu.root.innerHTML =
 `
+<h2>Notes:</h2>
+<ol style="max-width: 200px;text-align: left;">
+  <li>Sorry for the initial delay with all of the example images, they are higher resolution then they needed to be.  <small>Also sorry that there's no progress bar</small></li>
+  <li>Uploading your own pictures will work much faster.</li>
+  <li>I shouldn't have said uploading because your pictures will never leave your browser and no one can see them.</li>
+  <li>You can save your image by right clicking the image and selecting "save as" while I get the download link working.</li>
+  <li>Thanks for checking it out!</li>
+  <small><li>Sorry it's not mobile friendly.</li></small>
+</ol>
+<hr />
 <h2>Background Color:</h2>
 <input type="color" name="background" value="${this.options.backgroundColor}"/>
 <hr />
