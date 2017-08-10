@@ -45,7 +45,10 @@ img {
 .project:hover img{
 	opacity: .5;
 }
-a{
+p a{
+	color: #3586b7;
+}
+a {
 	text-decoration: none;
 	color: inherit;
 }
