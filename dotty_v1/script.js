@@ -6,7 +6,7 @@
       if (DEBUG) console.log(`Loaded the image`)
       resolve(img)
     })
-    img.src = "../imgs/2.jpg"
+    img.src = "../imgs/me_1.jpg"
   })).then((img) => {
       // Get the image's data
     	const canvas = document.createElement('canvas')
@@ -34,7 +34,7 @@
         // Align by height
         picPixelsPerDot = (pixelsPerDot / window.innerHeight) * imgData.height
         origin = {
-          x: -Math.floor((window.innerWidth * (imgData.height / window.innerHeight) - imgData.width) / 2),
+          x: -Math.abs(Math.floor((window.innerWidth * (imgData.height / window.innerHeight) - imgData.width) / 2)),
           y: 0
         }
       } else {
@@ -42,7 +42,7 @@
         picPixelsPerDot = (pixelsPerDot / window.innerWidth) * imgData.width
         origin = {
           x: 0,
-          y: -Math.floor((window.innerHeight * (imgData.width / window.innerWidth) - imgData.height) / 2)
+          y: -Math.abs(Math.floor((window.innerHeight * (imgData.width / window.innerWidth) - imgData.height) / 2))
         }
       }
       if(DEBUG) console.log("Origin: ", origin)
@@ -66,11 +66,11 @@
           dot.style.top = pixelsPerDot * row + offsetHeight + "px"
 
           let r, g, b, a = 1
-          if (picX < 0 || picX > imgData.width || picY < 0 || picY > imgData.height) {
+          if (picX <= 0 || picX > imgData.width || picY <= 0 || picY > imgData.height) {
             if (DEBUG) {
               r = 255, g = 0, b = 0
             } else {
-              r = 238, g = 238, b = 238 // #eee
+              // r = 238, g = 238, b = 238 // #eee
               r = 51, g = 51, b = 51 // #333
               // r = 0, g = 0, b = 0 // #000
             }
