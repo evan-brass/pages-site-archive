@@ -19,6 +19,16 @@ const PRESETS = {
   minFill: .05
 }
 
+// Copied from: https://stackoverflow.com/questions/23150333/html5-javascript-dataurl-to-blob-blob-to-dataurl
+function dataURLtoBlob(dataurl) {
+    var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+        bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+    while(n--){
+        u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new Blob([u8arr], {type:mime});
+}
+
 class Dotty {
   constructor(options = {}) {
     this.options = Object.assign(options, PRESETS)
@@ -45,7 +55,6 @@ class Dotty {
   <li>Sorry for the initial delay with all of the example images, they are higher resolution then they needed to be.  <small>Also sorry that there's no progress bar</small></li>
   <li>Uploading your own pictures will work much faster.</li>
   <li>I shouldn't have said uploading because your pictures will never leave your browser and no one can see them.</li>
-  <li>You can save your image by right clicking the image and selecting "save as" while I get the download link working.</li>
   <li>Thanks for checking it out!</li>
   <small><li>Sorry it's not mobile friendly.</li></small>
 </ol>
@@ -65,8 +74,7 @@ ${this.options.minFill*100}%<input type="range" name="fill" min="${this.options.
 ${this.options.minSpacing}px<input type="range" name="spacing" min="${this.options.minSpacing}" max="${this.options.maxSpacing}" step="2" value="${this.options.spacing}"/>${this.options.maxSpacing}px<br />
 <hr />
 <h2>Download:</h2>
-<div>Doesn't work yet</div>
-<button name="createDownload" type="button" disabled>Create Download Link</button>
+<button name="createDownload" type="button">Create Download Link</button><br />
 `
     // Make our menu active
     this.menu.background = this.menu.root.querySelector('[name="background"]')
@@ -94,7 +102,7 @@ ${this.options.minSpacing}px<input type="range" name="spacing" min="${this.optio
   }
   ParseMenu() {
     // Remove any (no obsolete) download link
-    let downloadLink = this.menu.root.querySelector("#download-link")
+    let downloadLink = document.querySelector("#download-link")
     if (downloadLink) {
       downloadLink.remove()
     }
@@ -131,8 +139,13 @@ ${this.options.minSpacing}px<input type="range" name="spacing" min="${this.optio
     return [imgData.data[index], imgData.data[index+1], imgData.data[index+2]]
   }
   CreateDownloadLink() {
-    this.menu.root.innerHTML +=
-`<a href="${URL.createObjectURL(this.canvas)}" id="download-link" download="true">Click me to Download</a>`
+    let downloadLink = document.createElement('a')
+    downloadLink.download = "DottyImage.png"
+    downloadLink.id = "download-link"
+    downloadLink.href = URL.createObjectURL(dataURLtoBlob(this.canvas.toDataURL("image/png")))
+    downloadLink.innerText = "Click me to download your image"
+
+    this.menu.root.appendChild(downloadLink)
   }
   Update(url) {
     let image = new Image()
