@@ -22,6 +22,7 @@ const pallete = [
 
 onmessage = function (e) {
 	const imageData = e.data;
+//	/*	
 	for (let i = 0; i < imageData.data.length; i += 4) {
 		let minDistance = Infinity;
 		let minColor = null;
@@ -36,5 +37,6 @@ onmessage = function (e) {
 			imageData.data[i + 1] = minColor[1];
 			imageData.data[i + 2] = minColor[2];
 	}
+//	*/
 	postMessage(imageData, [imageData.data.buffer]);
 };

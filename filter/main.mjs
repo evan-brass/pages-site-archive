@@ -71,7 +71,7 @@
 
 	// nextFrame
 	let buffer;
-	if (OffscreenCanvas !== undefined) {
+	if (window.OffscreenCanvas !== undefined) {
 		buffer = new OffscreenCanvas(canvas.width, canvas.height);
 	} else {
 		buffer = document.createElement('canvas');
