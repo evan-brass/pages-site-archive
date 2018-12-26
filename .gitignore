@@ -2,3 +2,5 @@
 Caddyfile
 
 realtime-processing/filters/target/
+
+*.code-workspace
