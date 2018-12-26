@@ -1,0 +1,16 @@
+[package]
+name = "filters"
+version = "0.1.0"
+authors = ["Evan Brass <evan-brass@pm.me>"]
+edition = "2018"
+
+[lib]
+path = "src/lib.rs"
+crate-type = ["cdylib"]
+
+[profile.release]
+panic = 'abort'
+debug = true
+
+[profile.dev]
+panic = 'abort'
