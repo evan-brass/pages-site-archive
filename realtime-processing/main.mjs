@@ -130,6 +130,7 @@
 		// Pull an image from the camera
 		drawContext.drawImage(video, 0, 0);
 
+		let before = performance.now();
 		await Promise.all((function* () {
 			for (let [swatch, y] of createSwatches()) {
 				yield (async function () {
@@ -146,6 +147,7 @@
 				})();
 			}
 		})());
+		console.log('Durration to render a frame:', performance.now() - before);
 
 		// Push the drawn image to the displayed canvas.
 		await new Promise((resolve, reject) => {

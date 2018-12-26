@@ -1,2 +1,6 @@
 # I use caddy to serve my site locally
 Caddyfile
+
+realtime-processing/filters/target/
+
+*.code-workspace
