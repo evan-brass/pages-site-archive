@@ -81,6 +81,12 @@ function update_digit() {
 		const math_degrees = ((dial_degrees % 360) + 360) % 360;
 		dial.style.transform = `rotate(-${math_degrees}deg)`;
 		const dial_value = Math.round(NumbersOnDial * math_degrees / 360) % NumbersOnDial + 1;
+		if (selected_digit == passcode.length - 1) {
+			if (dial_value == passcode[selected_digit]) {
+				digits[selected_digit].innerText = dial_value;
+				enter_number();
+			}
+		}
 		const new_direction = (last_degrees - dial_degrees < 0) ? 'down' : 'up';
 		if (direction && direction !== new_direction) {
 			enter_number();
