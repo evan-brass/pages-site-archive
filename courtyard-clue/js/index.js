@@ -29,7 +29,7 @@ const touchstart_handler = e => {
 const secret_message_holder = document.body.querySelector('.secret-message');
 
 const secret_message = `
-	Congradulations! This message is something that only people who crack the safe can see.
+	Congratulations! This message is something that only people who crack the safe can see.
 `;
 
 function delay(ms) {

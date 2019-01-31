@@ -1,3 +1,4 @@
+
 struct Color {
     red: u8,
     green: u8,

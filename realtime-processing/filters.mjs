@@ -3,11 +3,11 @@
 (async function initialize() {
 		
 	const palette = [
-		"faa916",
-		"fbfffe",
-		"6d676e",
-		"1b1b1e",
-		"96031a"
+		"240115",
+		"ef594f",
+		"d8cbc7",
+		"2d3a3a",
+		"c64e11"
 	].map(str => 
 		[
 			Number.parseInt(str.slice(0, 2), 16),
@@ -35,7 +35,7 @@
 
 	onmessage = function (e) {
 		const imageData = e.data;
-//		/*
+		/*
 		const imageDataLocation = new Uint8ClampedArray(instance.exports.memory.buffer, 4 * palette.length, 4 * imageData.width * imageData.height);
 		imageDataLocation.set(imageData.data);
 		fastFilter(imageData.width, imageData.height, palette.length);
