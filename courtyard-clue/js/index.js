@@ -2,7 +2,7 @@ let dial;
 let digits = [];
 let dial_degrees = 0;
 let digit_holder;
-const passcode = [1, 2, 3, 4, 5];
+const passcode = [2, 4, 3, 5];
 const NumbersOnDial = 10;
 
 const wheel_handler = e => {
@@ -29,7 +29,11 @@ const touchstart_handler = e => {
 const secret_message_holder = document.body.querySelector('.secret-message');
 
 const secret_message = `
-	Congratulations! This message is something that only people who crack the safe can see.
+	My partner has what you need next<br>
+	& they're lying in wait<br>
+	where a stadium of rest is found -<br>
+	& noise.<br>
+	Cue the competition
 `;
 
 function delay(ms) {
