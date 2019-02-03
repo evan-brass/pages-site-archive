@@ -113,6 +113,6 @@ function unregister_handlers() {
 	document.body.querySelector('main').removeEventListener('touchstart', touchstart_handler);
 }
 function reveal_message() {
-	secret_message_holder.innerText = secret_message;
+	secret_message_holder.innerHTML = secret_message;
 	secret_message_holder.classList.add('revealed');
 }
