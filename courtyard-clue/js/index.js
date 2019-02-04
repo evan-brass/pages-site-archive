@@ -33,7 +33,8 @@ const secret_message = `
 	& they're lying in wait<br>
 	where a stadium of rest is found -<br>
 	& noise.<br>
-	Cue the competition
+	Cue the competition<br>
+	Oh, and be polite.
 `;
 
 function delay(ms) {
