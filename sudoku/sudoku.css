@@ -1,0 +1,44 @@
+.sudoku {
+	--accent-color: #000;
+}
+.sudoku table {
+	border-collapse: collapse;
+	margin: 0 auto;
+}
+.sudoku td {
+	border: 1px solid #aaa;
+	width: 2em;
+	height: 2em;
+	text-align: center;
+	vertical-align: middle;
+}
+.sudoku td:nth-of-type(3n) {
+	border-right: 2px solid var(--accent-color);
+}
+.sudoku td:nth-of-type(1) {
+	border-left: 2px solid var(--accent-color);
+}
+.sudoku tr:nth-of-type(3n) {
+	border-bottom: 2px solid var(--accent-color);
+}
+.sudoku tr:nth-of-type(1) {
+	border-top: 2px solid var(--accent-color);
+}
+.sudoku .original {
+	font-weight: bold;
+}
+.sudoku .num-container {
+	text-align: center;
+}
+.sudoku .num-container button {
+	width: 2em;
+	height: 2em;
+	margin: .3em;
+	border-radius: 50%;
+	border: none;
+	outline: 0;
+	background: none;
+}
+.sudoku .num-container .active-number {
+	border: 2px solid var(--accent-color);
+}
