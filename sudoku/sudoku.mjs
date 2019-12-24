@@ -7,27 +7,6 @@ function* range(start, end, step) {
     }
 }
 
-const _ = 0;
-const puzzle = [
-	5, 3, _,  _, 7, _,  _, _, _,
-	6, _, _,  1, 9, 5,  _, _, _,
-	_, 9, 8,  _, _, _,  _, 6, _,
-
-	8, _, _,  _, 6, _,  _, _, 3,
-	4, _, _,  8, _, 3,  _, _, 1,
-	7, _, _,  _, 2, _,  _, _, 6,
-	
-	_, 6, _,  _, _, _,  2, 8, _,
-	_, _, _,  4, 1, 9,  _, _, 5,
-	_, _, _,  _, 8, _,  _, 7, 9
-];
-
-// This just calls the function with the item and the index
-function iter_cell(board, func) {
-	for (let i = 0; i < (9*9); ++i) {
-		func(board[i], i);
-	}
-}
 
 // Move between index and row / column coordinates
 function i2rc(index) {
@@ -40,70 +19,115 @@ function rc2i(row, column) {
 	return 9 * row + column;
 }
 
-// Build a table with the right number of rows and columns.  No need to store references because I can index into the table using dom apis.
-function build_table() {
-	const table = document.createElement('table');
-	const body = document.createElement('tbody');
-	table.appendChild(body);
-	for (let _ of range(0, 9)) {
-		const row = document.createElement('tr');
-		for (let _ of range(0, 9)) {
-			const cell = document.createElement('td');
-			cell.setAttribute('tabindex', '-1');
-			row.appendChild(cell);
+export default class SudokuGame extends HTMLElement {
+	constructor() {
+		super();
+		this.attachShadow({
+			mode: 'open'
+		});
+
+		this.current_number = 1;
+		this.current_mode = 0; // 0 = insert, 1 = note, 2 = Erase
+
+		this.stats = [0, 0, 0, 0, 0, 0, 0, 0, 0]; // How many of each number have been filled in.
+	}
+	connectedCallback() {
+		const contents = `
+			<link rel="stylesheet" href="./sudoku.css"></style>
+			<header>
+				<h1>Sudoku</h1>
+			</header>
+			<table>
+				<tbody>
+					${`<tr>
+						${`<td tabindex="-1"></td>`.repeat(9)}
+					</tr>`.repeat(9)}
+				</tbody>
+			</table>
+			<span class="num-container">
+				${Array.from(range(1, 10)).map(i => 
+					`<button data-count="0" ${i == this.current_number ? 'class="active-number"' : ''}>${i}</button>`
+				).join('')}
+			</span>
+		`;
+		this.shadowRoot.innerHTML = contents;
+		// Placing numbers
+		const table = this.shadowRoot.querySelector('table');
+		table.addEventListener('click', ({target}) => {
+			if (target.matches('td:not(.original)')) {
+				const current_value = (target.innerText == '') ? false : Number(target.innerText);
+				if (this.current_mode == 0) {
+					// Edit Mode:
+					if (this.current_number == current_value) {
+						target.innerText = '';
+						this.update_stats(this.current_number, -1);
+					} else {
+						target.innerText = this.current_number;
+						this.update_stats(this.current_number, +1);
+					}
+					target.classList.remove('note');
+				} else {
+					// Note Mode:
+					const existing = target.innerText.split(' ').filter(x => x != '').map(x => Number(x));
+					const old_index = existing.indexOf(this.current_number);
+					if (old_index == -1) {
+						existing.push(this.current_number);
+						existing.sort((a, b) => a - b);
+					} else {
+						existing.splice(old_index, 1);
+					}
+					target.innerText = existing.join(' ');
+					target.classList.add('note');
+				}
+			}
+		});
+		// Changing active number
+		const num_container = this.shadowRoot.querySelector('.num-container');
+		this.num_container = num_container;
+		num_container.addEventListener('click', ({target}) => {
+			if (target.matches('button')) {
+				const mode_names = ['edit', 'note'];
+				const value = Number(target.innerText);
+				if (this.current_number == value) {
+					// Change mode instead of changing number:
+					target.classList.remove(mode_names[this.current_mode]);
+					this.current_mode = (this.current_mode + 1) % mode_names.length;
+					target.classList.add(mode_names[this.current_mode]);
+				} else {
+					this.current_number = value
+					const mode = mode_names[this.current_mode];
+					const previous = num_container.querySelector('.active-number');
+					previous.classList.remove('active-number', mode);
+					target.classList.add('active-number', mode);
+				}
+			}
+		});
+	}
+	update_stats(number, amount) {
+		this.stats[number - 1] += amount;
+		this.num_container.children[number - 1].dataset['count'] = this.stats[number - 1];
+	}
+	load_puzzle(arr) {
+		const table = this.shadowRoot.querySelector('table');
+		for (let i of range(0, (9*9))) {
+			const [r, c] = i2rc(i);
+			const item = arr[i];
+			const el = table.rows[r].cells[c];
+			if (item) {
+				this.update_stats(item, +1);
+				el.innerText = item;
+				// Mark the original numbers so that they can't be erased later on:
+				el.classList.add('original');
+			}
 		}
-		body.appendChild(row);
 	}
-	return table;
+
+	disconnectedCallback() {
+		
+	}
+
+	// attributeChangedCallback(name, oldValue, newValue) {
+		
+	// }
 }
-
-// Initialize the sudoku game:
-// Initialize the solver's view of the sudoku puzzle:
-const board = Array.from(puzzle);
-
-// Initialize the player's view of the sudoku puzzle:
-const table = build_table();
-
-// Initialize 
-for (let i of range(0, (9*9))) {
-	const [r, c] = i2rc(i);
-	const item = board[i];
-	const el = table.rows[r].cells[c];
-	if (item) {
-		el.innerText = item;
-		// Mark the original numbers so that they can't be erased later on:
-		el.classList.add('original');
-	}
-}
-
-// Editing state:
-let current_number = 1;
-
-// Buttons for selecting which number to enter:
-const buttons_container = document.createElement('div');
-buttons_container.classList.add('num-container');
-const num_select_buttons = Array.from(range(1, 10)).map(num => {
-	const button = document.createElement('button');
-	if (num == current_number) {
-		button.classList.add('active-number');
-	}
-	button.innerText = num;
-	button.addEventListener('click', _ => {
-		num_select_buttons[current_number - 1].classList.remove('active-number');
-		button.classList.add('active-number');
-		current_number = num;
-	});
-	buttons_container.appendChild(button);
-	return button;
-});
-
-// Actually placing numbers into the table:
-table.addEventListener('click', ({target}) => {
-	if (target.matches('td:not(.original)')) {
-		target.innerText = current_number;
-	}
-});
-
-// Output + styles:
-document.body.appendChild(table);
-document.body.appendChild(buttons_container);
+customElements.define('sudoku-game', SudokuGame);

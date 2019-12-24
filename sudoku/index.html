@@ -1,10 +1,50 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<link rel="stylesheet" href="sudoku.css">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 	</head>
 	<body class="sudoku">
+		<sudoku-game></sudoku-game>
+		<style>
+			sudoku-game {
+				margin: 0 auto;
+				font-size: 16px;
+			}
+		</style>
+		<script type="module">	
+			const _ = 0;
+			const puzzles = [
+				[	// Puzzle 1: Pretty Easy
+					5, 3, _,  _, 7, _,  _, _, _,
+					6, _, _,  1, 9, 5,  _, _, _,
+					_, 9, 8,  _, _, _,  _, 6, _,
+
+					8, _, _,  _, 6, _,  _, _, 3,
+					4, _, _,  8, _, 3,  _, _, 1,
+					7, _, _,  _, 2, _,  _, _, 6,
+					
+					_, 6, _,  _, _, _,  2, 8, _,
+					_, _, _,  4, 1, 9,  _, _, 5,
+					_, _, _,  _, 8, _,  _, 7, 9
+				],
+				[	// Puzzle 2: Harder
+					_, _, _,  7, _, _,  _, _, _,
+					1, _, _,  _, _, _,  _, _, _,
+					_, _, _,  4, 3, _,  2, _, _,
+
+					_, _, _,  _, _, _,  _, _, 6,
+					_, _, _,  5, _, 9,  _, _, _,
+					_, _, _,  _, _, _,  4, 1, 8,
+					
+					_, _, _,  _, 8, 1,  _, _, _,
+					_, _, 2,  _, _, _,  _, 5, _,
+					_, 4, _,  _, _, _,  3, _, _
+				]
+			];
+			customElements.whenDefined('sudoku-game').then(_ => {
+				document.querySelector('sudoku-game').load_puzzle(puzzles[1]);
+			});
+		</script>
 		<script type="module" src="sudoku.mjs"></script>
 	</body>
 </html>

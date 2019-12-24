@@ -1,44 +1,112 @@
-.sudoku {
+/* @import url('https://fonts.googleapis.com/css?family=Courier+Prime|Inria+Serif|Roboto+Slab'); */
+
+:host {
 	--accent-color: #000;
+	display: grid;
+	grid-template-rows: min-content;
+	grid-template-columns: 1fr min-content 1fr;
+	grid-template-areas: 
+		"l header r"
+		"l puzzle r"
+		"l buttons r";
+	font-family: monospace;
 }
-.sudoku table {
+header {
+	grid-area: header;
+}
+header h1 {
+	margin: 0;
+	padding: 0;
+}
+table {
 	border-collapse: collapse;
-	margin: 0 auto;
+	grid-area: puzzle;
 }
-.sudoku td {
+td {
 	border: 1px solid #aaa;
 	width: 2em;
 	height: 2em;
 	text-align: center;
 	vertical-align: middle;
 }
-.sudoku td:nth-of-type(3n) {
-	border-right: 2px solid var(--accent-color);
-}
-.sudoku td:nth-of-type(1) {
-	border-left: 2px solid var(--accent-color);
-}
-.sudoku tr:nth-of-type(3n) {
-	border-bottom: 2px solid var(--accent-color);
-}
-.sudoku tr:nth-of-type(1) {
-	border-top: 2px solid var(--accent-color);
-}
-.sudoku .original {
+td.original {
 	font-weight: bold;
 }
-.sudoku .num-container {
-	text-align: center;
+td.note {
+	color: #aaa;
+	font-size: 0.7em;
+	text-align: unset;
+	vertical-align: unset;
 }
-.sudoku .num-container button {
+td:nth-of-type(3n) {
+	border-right: 2px solid var(--accent-color);
+}
+td:nth-of-type(1) {
+	border-left: 2px solid var(--accent-color);
+}
+tr:nth-of-type(3n) {
+	border-bottom: 2px solid var(--accent-color);
+}
+tr:nth-of-type(1) {
+	border-top: 2px solid var(--accent-color);
+}
+.num-container {
+	display: flex;
+	grid-area: buttons;
+}
+.num-container button {
+	box-sizing: border-box;
+	position: relative;
 	width: 2em;
 	height: 2em;
 	margin: .3em;
-	border-radius: 50%;
-	border: none;
+	border: 2px solid transparent;
 	outline: 0;
+	/* border-top: 0; */
 	background: none;
+	text-align: center;
+	border-radius: 50%;
+	/* border-top-left-radius: 15% 30%;
+	border-top-right-radius: 50%;
+	border-bottom-right-radius: 50%;
+	border-bottom-left-radius: 50%; */
 }
-.sudoku .num-container .active-number {
-	border: 2px solid var(--accent-color);
+.num-container .active-number {
+	border-color: #000;
+	font-weight: bold;
+}
+.num-container .active-number.note {
+	border-color: #aaa;
+	color: #aaa;
+}
+/* Varients for the counts: */
+.num-container button[data-count="0"]::before {
+	height: 0%;
+}
+.num-container button[data-count="1"]::before {
+	height: 11%;
+}
+.num-container button[data-count="2"]::before {
+	height: 22%;
+}
+.num-container button[data-count="3"]::before {
+	height: 33%;
+}
+.num-container button[data-count="4"]::before {
+	height: 44%;
+}
+.num-container button[data-count="5"]::before {
+	height: 55%;
+}
+.num-container button[data-count="6"]::before {
+	height: 67%;
+}
+.num-container button[data-count="7"]::before {
+	height: 78%;
+}
+.num-container button[data-count="8"]::before {
+	height: 89%;
+}
+.num-container button[data-count="9"]::before {
+	height: 100%;
 }
