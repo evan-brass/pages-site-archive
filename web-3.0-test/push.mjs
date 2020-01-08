@@ -3,8 +3,8 @@ import { strToArray, arrayToStr, toUrlBase64 } from './common.mjs';
 // By default this makes a jwt that is valid for 12 hours
 export async function make_jwt(
 	signing_key, 
-	duration = (12 /*hr*/ * 60 /*min*/ * 60/*sec*/ * 1000/*ms*/),
-	audience = window.origin,
+	audience,
+	duration = (12 /*hr*/ * 60 /*min*/ * 60/*sec*/),
 	subscriber = "mailto:evan-brass@protonmail.com"
 ) {
 	// Create a JWT that pushers to our subscription will need
@@ -12,7 +12,7 @@ export async function make_jwt(
 		typ: "JWT",
 		alg: "ES256"
 	}));
-	const experation_stamp = Date.now() + duration;
+	const experation_stamp = Math.round((Date.now() / 1000) + duration);
 	const jwt_body = toUrlBase64(JSON.stringify({
 		aud: audience,
 		exp: experation_stamp,

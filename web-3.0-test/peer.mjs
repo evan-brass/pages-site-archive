@@ -82,7 +82,7 @@ export default class Peer {
 		return ret;
 	}
 	constructor() {}
-	async send(data) {
+	async push(data, time_to_live = 5) {
 		// Pad the data:
 		const max_plaintext = 3992; // 3992 is conservative I think.
 		if (data.byteLength > max_plaintext) {
@@ -96,7 +96,8 @@ export default class Peer {
 
 		// Get the jwt
 		// TODO: Check that the JWT is still valid
-		const jwt = this.jwt || await make_jwt(this.pair.privateKey);
+		const audience = (new URL(this.endpoint)).origin;
+		const jwt = this.jwt || await make_jwt(this.pair.privateKey, audience);
 
 		const message_dh = await crypto.subtle.generateKey(
 			{	name: 'ECDH',
@@ -185,10 +186,11 @@ export default class Peer {
 		// Create a fetch request to send to the push server
 		const headers = new Headers();
 		headers.append('Encryption', `salt=${salt_encoded}`);
-		const as_public_encoded = toUrlBase64(arrayToStr(await crypto.subtle.exportKey('raw', this.pair.publicKey)));
-		headers.append('Crypto-Key', `p256ecdsa=${as_public_encoded}, dh=${message_dh_encoded}`);
+		headers.append('Crypto-Key', `dh=${message_dh_encoded}`);
 		headers.append('Content-Encoding', 'aesgcm');
-		headers.append('Authorization', `bearer ${jwt}`);
+		const as_public_encoded = toUrlBase64(arrayToStr(await crypto.subtle.exportKey('raw', this.pair.publicKey)));
+		headers.append('Authorization', `vapid t=${jwt}, k=${as_public_encoded}`);
+		headers.append('ttl', time_to_live.toString());
 		console.log('salt', salt_encoded);
 		console.log('dh', message_dh_encoded);
 		console.log('jwt', jwt);
@@ -200,7 +202,8 @@ export default class Peer {
 			headers,
 			body,
 			cache: 'no-store',
-			mode: 'cors'
+			mode: 'cors',
+			referrerPolicy: 'no-referrer'
 		});
 
 		console.log(atob(jwt.split('.')[1]));
