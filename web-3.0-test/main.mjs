@@ -1,7 +1,4 @@
 import Peer from './peer.mjs';
-import { toUrlBase64 } from './common.mjs';
-import { add_key, get_keys } from './peersistence.mjs';
-import { make_jwt } from './push.mjs';
 
 (async function(){
 	const title = document.getElementById('title');
@@ -24,28 +21,19 @@ import { make_jwt } from './push.mjs';
 
 	let subscription = false;
 	let application_server_key = false;
+	let self;
 	if (subscription = await registration.pushManager.getSubscription()) {
 		console.log('Existing subscription.  Checking if the application server key is stored in peersistence... ');
-		let found_key = false;
-		const target_public = new Uint8Array(subscription.options.applicationServerKey);
-		for (const key of await get_keys()) {
-			const raw_public = new Uint8Array(await crypto.subtle.exportKey('raw', key.publicKey));
-			if (target_public.every((v, i) => v == raw_public[i])) {
-				found_key = true;
-				application_server_key = key;
-			}
-		}
-		if (!found_key) {
+		self = await Peer.find_self(subscription);
+		if (!self) {
 			console.log("Couldn't find the key for the existing subscription so unsubscribing: ", await subscription.unsubscribe());
 			subscription = false;
 		} else {
-			console.log("Key was found.")
+			console.log("Key was found.", self);
 		}
 	}
 	if (!subscription) {
 		// Create a new subscription
-
-		// Give out to nodes that we want to send us push messages.
 		application_server_key = await crypto.subtle.generateKey(
 			{	name: 'ECDSA',
 				namedCurve: 'P-256'
@@ -57,7 +45,6 @@ import { make_jwt } from './push.mjs';
 			'Created new application server key',
 			application_server_key
 		);
-		const server_key = await crypto.subtle.exportKey("raw", application_server_key.publicKey);
 		
 		// Enabling notifications requires user action so I'm using a button press
 		await do_step(
@@ -65,22 +52,26 @@ import { make_jwt } from './push.mjs';
 			"Click the button and then allow notification access.", 
 			"Ask me"
 		);
-
+			
+		const server_key = await crypto.subtle.exportKey("raw", application_server_key.publicKey);
 		subscription = await registration.pushManager.subscribe({
 			// Chrome doesn't allow non-user-visible pushes so we need to show a notification every time.
 			userVisibleOnly: true, // TODO: Switch this to be off because we mostly won't want to show notifications.
 			applicationServerKey: server_key
 		});
-		console.log(subscription);
 
 		if (subscription) {
-			console.log('Subscribed. Adding key to peersistence...');
-			await add_key(application_server_key);
-			console.log('Key added.');
+			console.log('Subscribed. Adding self peer...');
+			self = await Peer.new_self(subscription, application_server_key);
+			console.log('Created Self', self);
 		} else {
 			console.error('Unable to subscribe?');
 		}
 	}
+	console.log(subscription);
+
+	const encoder = new TextEncoder();
+	self.send(encoder.encode("This is a test"));
 	/*
 	
 	// Encrypt a message to our subscription:
