@@ -195,7 +195,7 @@ export default class Peer {
 		console.log('as_public', as_public_encoded);
 		
 		// HACK: Since Google Cloud Messenger doesn't provide CORS I'm using cors-anywhere
-		const request = await fetch('http://cors-anywhere.herokuapp.com/' + this.endpoint, {
+		const request = await fetch('https://cors-anywhere.herokuapp.com/' + this.endpoint, {
 			method: 'POST',
 			headers,
 			body,
