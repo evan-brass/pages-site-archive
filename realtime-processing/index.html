@@ -1,7 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-
+	<script>
+	// Content uses media devices which are only accessible over https so redirect if needed
+	if (window.location.protocol !== 'https:') {
+		const url = new URL(window.location.href);
+		url.protocol = 'https:';
+		window.location = url;
+	}
+	</script>
 </head>
 <body>
     <script type="module" src="main.mjs"></script>
