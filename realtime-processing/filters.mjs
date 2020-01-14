@@ -41,7 +41,7 @@
 		fastFilter(imageData.width, imageData.height, palette.length);
 		imageData.data.set(imageDataLocation);
 //		*/
-	/*	
+		/*	
 		for (let i = 0; i < imageData.data.length; i += 4) {
 			let minDistance = Infinity;
 			let minColor = null;
