@@ -34,8 +34,9 @@
 	}
 
 	onmessage = function (e) {
+		// console.log('Worker received message');
 		const imageData = e.data;
-		/*
+//		/*
 		const imageDataLocation = new Uint8ClampedArray(instance.exports.memory.buffer, 4 * palette.length, 4 * imageData.width * imageData.height);
 		imageDataLocation.set(imageData.data);
 		fastFilter(imageData.width, imageData.height, palette.length);
@@ -59,4 +60,6 @@
 //		*/
 		postMessage(imageData, [imageData.data.buffer]);
 	};
+	console.log('postingReady message');
+	postMessage('ready');
 })();

@@ -3,6 +3,7 @@
 
 	// Make the canvas centered
 	if (canvas.attributeStyleMap) {
+		canvas.attributeStyleMap.set('max-width', CSS.percent(100));
 		canvas.attributeStyleMap.set('position', 'absolute');
 		canvas.attributeStyleMap.set('left', CSS.percent(50));
 		canvas.attributeStyleMap.set('top', CSS.percent(50));
@@ -10,6 +11,7 @@
 			new CSSTranslate(CSS.percent(-50), CSS.percent(-50))
 		]));
 	} else {
+		canvas.style.maxWidth = '100%';
 		canvas.style.position = 'absolute';
 		canvas.style.left = '50%';
 		canvas.style.top = '50%';
@@ -99,10 +101,16 @@
 		constructor(workerCount = 2, source = 'filters.mjs') {
 			this.workers = [];
 			for (let i = 0; i < workerCount; ++i) {
-				this.workers.push(new Worker(source, {
+				const worker = new Worker(source, {
 					type: 'module',
 					name: `${source} - ${i}`
-				}));
+				});
+				worker.onmessage = ({data}) => {
+					if (data == 'ready') {
+						worker.onmessage = null;
+						this.returnWorker(worker);
+					}
+				};
 			}
 			this.workers.then = func => {
 				if (this.workers.length > 0) {
@@ -166,7 +174,7 @@
 				})();
 			}
 		})());
-		console.log('Durration to render a frame:', performance.now() - before);
+		// console.log('Durration to render a frame:', performance.now() - before);
 
 		// Push the drawn image to the displayed canvas.
 		await new Promise((resolve, reject) => {
