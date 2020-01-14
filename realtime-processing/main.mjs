@@ -15,8 +15,17 @@
 		canvas.style.top = '50%';
 		canvas.style.transform = 'translate(-50%, -50%)';
 	}
-
 	document.body.appendChild(canvas);
+	console.log('Built canvas');
+
+	// Make the user click a button so that the media request  happens in response to a user action
+	const user_input_button = document.createElement('button');
+	user_input_button.innerText = "Click me to open webcam access";
+	document.body.appendChild(user_input_button);
+	await new Promise(res => user_input_button.onclick = () => {
+		user_input_button.remove();
+		res();
+	});
 
 	// Get access to the user's camera
 	let stream;
@@ -30,6 +39,7 @@
 		console.error("Unable to get the user's video stream.");
 		throw err;
 	}
+	console.log('Aquired webcam stream');
 
 	// Turn the camera into a video that we can render and 
 	let video;
@@ -42,6 +52,7 @@
 		await loaded;
 		video.play();
 	}
+	console.log('Started playing webcam in video element');
 
 	// Transfer the aspect ratio and width/height of the stream to the canvas
 	{
@@ -65,6 +76,7 @@
 		canvas.width = video.width;
 		canvas.height = video.height;
 	}
+	console.log('Transferred webcam properties to canvas');
 
 	// Canvas Drawing
 	const context = canvas.getContext('2d');
@@ -73,10 +85,12 @@
 	let buffer;
 	if (window.OffscreenCanvas !== undefined) {
 		buffer = new OffscreenCanvas(canvas.width, canvas.height);
+		console.log('Created background canvas: type = offscreen');
 	} else {
 		buffer = document.createElement('canvas');
 		buffer.width = canvas.width;
 		buffer.height = canvas.height;
+		console.log('created background canvas: type = element');
 	}
 	const drawContext = buffer.getContext('2d');
 
@@ -113,6 +127,7 @@
 			}
 		}
 	};
+	console.log('Created worker pool');
 
 	const linesPerSwatch = 60;
 	function* createSwatches() {
@@ -126,6 +141,7 @@
 	}
 
 	// Kick start the draw loop
+	console.log('About to bootstrap draw loop');
 	(async function draw() {
 		// Pull an image from the camera
 		drawContext.drawImage(video, 0, 0);
@@ -135,15 +151,18 @@
 			for (let [swatch, y] of createSwatches()) {
 				yield (async function () {
 					const worker = (await workerPool.getWorker.next()).value;
-					worker.postMessage(swatch, [swatch.data.buffer]);
-					await new Promise(resolve => {
+					const received = new Promise(resolve => {
 						worker.onmessage = e => {
+							// console.log(`Received swatch: y=${y} worker=`, worker);
 							const responseData = e.data;
 							workerPool.returnWorker(worker);
 							putSwatch(responseData, y);
 							resolve();
 						};
 					});
+					// console.log(`Sending swatch: y=${y} worker=`, worker);
+					worker.postMessage(swatch, [swatch.data.buffer]);
+					await received;
 				})();
 			}
 		})());
