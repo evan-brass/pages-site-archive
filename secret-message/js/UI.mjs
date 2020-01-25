@@ -1,5 +1,5 @@
-import {pattern, symbols, passcode, message} from './secrets.jsm';
-import {normalize_degrees} from './utilities.jsm';
+import {pattern, symbols, passcode, message} from './secrets.mjs';
+import {normalize_degrees} from './utilities.mjs';
 
 export const dial = document.createElement('div');
 dial.classList.add('dial');

@@ -1,6 +1,6 @@
-import {wrong_code, correct_code, clear_code, update_dial, digit_elements, reveal_message} from './UI.jsm';
-import {delay, event_stream, stream_join, normalize_degrees} from './utilities.jsm';
-import {passcode, symbols} from './secrets.jsm';
+import {wrong_code, correct_code, clear_code, update_dial, digit_elements, reveal_message} from './UI.mjs';
+import {delay, event_stream, stream_join, normalize_degrees} from './utilities.mjs';
+import {passcode, symbols} from './secrets.mjs';
 
 
 function check_passcode(symbols) {
@@ -37,7 +37,7 @@ async function behavior() {
 					last_touch_y = event.touches[0].clientY;
 					degrees += diff * Scaler;
 				} else if (event.type == 'wheel') {
-					const Scaler = .5;
+					const Scaler = .1;
 					degrees += event.deltaY * Scaler;
 				} else if (event.type == 'touchend') {
 					last_touch_y = undefined;
